@@ -1,0 +1,14 @@
+
+
+
+[ kafka consume ]
+kafka-console-consumer.sh \
+--bootstrap-server 172.30.1.111:9092 \
+--topic kafka-topic \
+--from-beginning
+
+[ kafka produce ]
+kafka-console-producer.sh \
+--broker-list 172.30.1.111:9092 \
+--topic kafka-topic
+'{"id":"1", "score":10}'
