@@ -1,0 +1,11 @@
+
+ [ Kafka topics ]
+# kafka topic list
+kafka-topics.sh --list --bootstrap-server 172.30.1.111:9092
+
+# kafka topic create
+kafka-topics.sh --create --bootstrap-server 172.30.1.111:9092
+
+# Kafka topic status
+kafka-topics.sh --bootstrap-server 172.30.1.111:9092 --describe --topic first-topic
+

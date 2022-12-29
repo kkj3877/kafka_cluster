@@ -11,7 +11,6 @@ openssl req -new -x509 -keyout ca-key -out ca-cert -days 3650
 # Create the truststore
 keytool -keystore kafka.zookeeper.truststore.jks -alias ca-cert -import -file ca-cert -storepass test123
 # Create the keystore
-# keytool -keystore kafka.zookeeper.keystore.jks -alias zookeeper -validity 3650 -genkey -keyalg RSA -ext SAN=dns:zookeeper
 keytool -keystore kafka.zookeeper.keystore.jks \
 -alias zookeeper -validity 3650 -genkey -keyalg RSA \
 -storepass test123 -keypass test123 \
