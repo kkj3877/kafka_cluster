@@ -5,7 +5,7 @@ SCALA_VER=2.12
 KAFKA_VER=2.5.0
 DOWNLOAD_FILE=kafka_${SCALA_VER}-${KAFKA_VER}.tgz
 DOWNLOAD_DIR=~/Documents
-SH_DIR=${DOWNLOAD_DIR}/shell_script
+SH_DIR=${DOWNLOAD_DIR}/scripts
 
 ## Download Kafka.tgz file
 if [ ! -e ${KAFKA_URL}/${KAFKA_VER}/${DOWNLOAD_FILE} ]; then

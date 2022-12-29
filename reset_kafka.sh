@@ -1,12 +1,12 @@
 #!/bin/bash
 
-./shell_script/explode_kafka.sh
+./scripts/explode_kafka.sh
 
 SCALA_VER=2.12
 KAFKA_VER=2.5.0
 DOWNLOAD_DIR=~/Documents
 KAFKA_HOME=${DOWNLOAD_DIR}/kafka_${SCALA_VER}-${KAFKA_VER}
-SH_DIR=${DOWNLOAD_DIR}/shell_script
+SH_DIR=${DOWNLOAD_DIR}/scripts
 
 echo -n "Info| Unzip kafka"
 tar xzf ${KAFKA_HOME}.tgz -C ${DOWNLOAD_DIR}
