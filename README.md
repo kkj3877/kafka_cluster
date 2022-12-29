@@ -4,6 +4,9 @@
 # Pre-requirements 2) add ENVIRONMENT_PATH.   
 - export PATH=${PATH}:~/Documents/kafka/bin   
    
+# Pre-requirements 3) httpie   
+- sudo apt-get install httpie -y   
+   
 ## 1. download_kafka.sh   
 ##    or reset_kafka.sh   
    

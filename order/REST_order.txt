@@ -1,0 +1,28 @@
+# list
+http GET localhost:8083/connectors
+
+# list + status
+http GET localhost:8083/connectors?expand=status
+
+# show config of connector
+http GET localhost:8083/connectors/<Connectors's name>
+http GET localhost:8083/connectors/mqtt-source-connector-test
+
+# show status of connector
+http GET localhost:8083/connectors/<Connectors's name>/status
+http GET 172.30.1.101:8083/connectors/mqtt-source-connector-test/status
+
+# stop the connector
+http PUT localhost:8083/connectors/<Connectors's name>/pause
+http PUT localhost:8083/connectors/mqtt-source-connector-test/pause
+
+# resume the connector
+http PUT localhost:8083/connectors/<Connectors's name>/resume
+http PUT localhost:8083/connectors/mqtt-source-connector-test/resume
+
+
+# delete the connector
+http DELETE localhost:8083/connectors/<Connectors's name>
+http DELETE localhost:8083/connectors/mqtt-source-connector-test
+
+http DELETE localhost:8083/connectors/mqtt-sink-connector-test

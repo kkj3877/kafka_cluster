@@ -1,0 +1,10 @@
+
+ [ Mosquitto-Certificate ]
+openssl genrsa -out mosquitto-client-key 2048 && \
+openssl req -new -out ca-request-mosquitto-client -key mosquitto-client-key && \
+scp ca-request-mosquitto-client ca@172.30.1.150:~/Downloads && rm ca-request*
+
+
+ [ Mosquitto Subscribe ]
+\
+mosquitto_sub \

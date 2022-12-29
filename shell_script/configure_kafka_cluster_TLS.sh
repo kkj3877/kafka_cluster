@@ -11,10 +11,11 @@ SH_DIR=${DOWNLOAD_DIR}/shell_script
 
 CONFIG_DIR=${KAFKA_HOME}/config
 BACKUP_DIR=${KAFKA_HOME}/backup
-SSL_DIR=${KAFKA_HOME}/ssl
+SSL_DIR=${DOWNLOAD_DIR}/ssl
+KAFKA_SSL_DIR=${KAFKA_HOME}/ssl
 
-mkdir -p ${SSL_DIR}
-cp -r ${DOWNLOAD_DIR}/ssl/* ${SSL_DIR}/
+mkdir -p ${KAFKA_SSL_DIR}
+cp -r ${DOWNLOAD_DIR}/ssl/* ${KAFKA_SSL_DIR}/
 
 ##################################################
 ## Configure properties file for Zookeeper
@@ -48,9 +49,9 @@ clientPort=2181
 secureClientPort=2182
 authProvider.x509=org.apache.zookeeper.server.auth.X509AuthenticationProvider
 serverCnxnFactory=org.apache.zookeeper.server.NettyServerCnxnFactory
-ssl.trustStore.location=${SSL_DIR}/kafka.zookeeper.truststore.jks
+ssl.trustStore.location=${KAFKA_SSL_DIR}/kafka.zookeeper.truststore.jks
 ssl.trustStore.password=test123
-ssl.keyStore.location=${SSL_DIR}/kafka.zookeeper.keystore.jks
+ssl.keyStore.location=${KAFKA_SSL_DIR}/kafka.zookeeper.keystore.jks
 ssl.keyStore.password=test123
 ssl.clientAuth=need
 
@@ -103,9 +104,9 @@ socket.request.max.bytes=104857600
 
 ############################# Secure Settings #############################
 # Properties for SSL Kafka Security between Broker and clients
-ssl.truststore.location=${SSL_DIR}/kafka.broker.truststore.jks
+ssl.truststore.location=${KAFKA_SSL_DIR}/kafka.broker.truststore.jks
 ssl.truststore.password=test123
-ssl.keystore.location=${SSL_DIR}/kafka.broker.keystore.jks
+ssl.keystore.location=${KAFKA_SSL_DIR}/kafka.broker.keystore.jks
 ssl.keystore.password=test123
 ssl.key.password=test123
 
@@ -141,9 +142,9 @@ zookeeper.clientCnxnSocket=org.apache.zookeeper.ClientCnxnSocketNetty
 zookeeper.ssl.client.enable=true
 zookeeper.ssl.protocol=TLSv1.2
 
-zookeeper.ssl.truststore.location=${SSL_DIR}/kafka.broker.truststore.jks
+zookeeper.ssl.truststore.location=${KAFKA_SSL_DIR}/kafka.broker.truststore.jks
 zookeeper.ssl.truststore.password=test123
-zookeeper.ssl.keystore.location=${SSL_DIR}/kafka.broker.keystore.jks
+zookeeper.ssl.keystore.location=${KAFKA_SSL_DIR}/kafka.broker.keystore.jks
 zookeeper.ssl.keystore.password=test123
 
 zookeeper.set.acl=true
@@ -185,28 +186,28 @@ bootstrap.servers=${KAFKA_BROKER_IP}:9093
 
 ############################# Secure Settings #############################
 security.protocol=SSL
-ssl.truststore.location=${SSL_DIR}/kafka.client.truststore.jks
+ssl.truststore.location=${KAFKA_SSL_DIR}/kafka.client.truststore.jks
 ssl.truststore.password=test123
-ssl.keystore.location=${SSL_DIR}/kafka.client.keystore.jks
+ssl.keystore.location=${KAFKA_SSL_DIR}/kafka.client.keystore.jks
 ssl.keystore.password=test123
 ssl.key.password=test123
 # ssl.cipher.suites = TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
 # ssl.cipher.suites = TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 
-producer.bootstrap.servers=172.30.1.254:9093
+producer.bootstrap.servers=172.30.1.111:9093
 producer.security.protocol=SSL
-producer.ssl.truststore.location=${SSL_DIR}/kafka.client.truststore.jks
+producer.ssl.truststore.location=${KAFKA_SSL_DIR}/kafka.client.truststore.jks
 producer.ssl.truststore.password=test123
-producer.ssl.keystore.location=${SSL_DIR}/kafka.client.keystore.jks
+producer.ssl.keystore.location=${KAFKA_SSL_DIR}/kafka.client.keystore.jks
 producer.ssl.keystore.password=test123
 producer.ssl.key.password=test123
 # producer.ssl.cipher.suites = TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
 
-consumer.bootstrap.servers=172.30.1.254:9093
+consumer.bootstrap.servers=172.30.1.111:9093
 consumer.security.protocol=SSL
-consumer.ssl.truststore.location=${SSL_DIR}/kafka.client.truststore.jks
+consumer.ssl.truststore.location=${KAFKA_SSL_DIR}/kafka.client.truststore.jks
 consumer.ssl.truststore.password=test123
-consumer.ssl.keystore.location=${SSL_DIR}/kafka.client.keystore.jks
+consumer.ssl.keystore.location=${KAFKA_SSL_DIR}/kafka.client.keystore.jks
 consumer.ssl.keystore.password=test123
 consumer.ssl.key.password=test123
 
@@ -271,7 +272,7 @@ rest.port=8083
 # c) directories immediately containing the package directory structure of classes of plugins and their dependencies
 # Examples: 
 # plugin.path=/usr/local/share/java,/usr/local/share/kafka/plugins,/opt/connectors,
-#plugin.path= " > ${CONFIG_DIR}/connect-distributed.properties
+plugin.path=${KAFKA_HOME}/plugins" > ${CONFIG_DIR}/connect-distributed.properties
 
 ##################################################
 ## Configure properties file for Kafka Consumer (for TLS)
@@ -310,9 +311,9 @@ bootstrap.servers=${KAFKA_BROKER_IP}:9093
 ############################# Secure Settings #############################
 security.protocol=SSL
 ssl.protocol=TLSv1.2
-ssl.truststore.location=${SSL_DIR}/kafka.client.truststore.jks
+ssl.truststore.location=${KAFKA_SSL_DIR}/kafka.client.truststore.jks
 ssl.truststore.password=test123
-ssl.keystore.location=${SSL_DIR}/kafka.client.keystore.jks
+ssl.keystore.location=${KAFKA_SSL_DIR}/kafka.client.keystore.jks
 ssl.keystore.password=test123
 ssl.key.password=test123
 " > ${CONFIG_DIR}/consumer.properties
@@ -373,12 +374,59 @@ compression.type=none
 ############################# Secure Settings #############################
 security.protocol=SSL
 ssl.protocol=TLSv1.2
-ssl.truststore.location=${SSL_DIR}/kafka.client.truststore.jks
+ssl.truststore.location=${KAFKA_SSL_DIR}/kafka.client.truststore.jks
 ssl.truststore.password=test123
-ssl.keystore.location=${SSL_DIR}/kafka.client.keystore.jks
+ssl.keystore.location=${KAFKA_SSL_DIR}/kafka.client.keystore.jks
 ssl.keystore.password=test123
 ssl.key.password=test123
 " > ${CONFIG_DIR}/producer.properties
+
+##################################################
+## Make shell script to make MQTT source connector on Kafka-Connect
+echo -e "#!/bin/bash
+
+# MQTT 커넥터 설정 정보
+CONN_NAME=mqtt-source-connector-test
+MQTT_BROKERS=ssl://172.30.1.199:8883
+MQTT_SSL_CA_CERT=/etc/ssl/ca-cert
+MQTT_SSL_CERT=/etc/ssl/mosquitto-client-cert
+MQTT_SSL_KEY=/etc/ssl/mosquitto-client-key
+MQTT_TOPIC=mqtt_topic
+KAFKA_TOPIC=kafka-topic
+
+# 카프카 커넥트에 MQTT 커넥터 생성 요청
+echo \"{ \\\"name\\\":\\\"\${CONN_NAME}\\\", \\\"config\\\": {
+\\\"connector.class\\\":\\\"com.datamountaineer.streamreactor.connect.mqtt.source.MqttSourceConnector\\\",
+\\\"tasks.max\\\": 1,
+\\\"connect.mqtt.kcql\\\": \\\"INSERT INTO \${KAFKA_TOPIC} SELECT * FROM \${MQTT_TOPIC} \\
+WITHCONVERTER=\\\`com.datamountaineer.streamreactor.connect.converters.source.JsonSimpleConverter\\\` WITHKEY(id)\\\",
+\\\"connect.mqtt.timeout\\\" : 1000,
+\\\"connect.mqtt.keep.alive\\\" : 1000,
+\\\"connect.mqtt.clean\\\" : false,
+\\\"connect.mqtt.client.id\\\" : \\\"kafka-connect\\\",
+\\\"connect.mqtt.converter.throw.on.error\\\" : false,
+\\\"connect.mqtt.hosts\\\" : \\\"\${MQTT_BROKERS}\\\",
+\\\"connect.mqtt.ssl.ca.cert\\\" : \\\"\${MQTT_SSL_CA_CERT}\\\",
+\\\"connect.mqtt.ssl.cert\\\" : \\\"\${MQTT_SSL_CERT}\\\",
+\\\"connect.mqtt.ssl.key\\\" : \\\"\${MQTT_SSL_KEY}\\\",
+\\\"connect.mqtt.service.quality\\\" : 1,
+\\\"connect.mqtt.tls.version\\\" : \\\"tlsv1.2\\\",
+\\\"key.converter\\\" : \\\"org.apache.kafka.connect.json.JsonConverter\\\",
+\\\"key.converter.schemas.enable\\\" : false,
+\\\"value.converter\\\" : \\\"org.apache.kafka.connect.json.JsonConverter\\\",
+\\\"value.converter.schemas.enable\\\" : false,
+\\\"errors.tolerance\\\" : \\\"all\\\",
+\\\"errors.log.enable\\\" : true,
+\\\"errors.log.include.messages\\\" : true
+}}\" | http POST ${KAFKA_BROKER_IP}:8083/connectors
+
+# \\\"connect.mqtt.tls.ciphers\\\" : \\\"TLS_ECDHE_RSA_AES128_GCM_SHA256\\\"," > ${KAFKA_HOME}/connect_mqtt_connector_TLS.sh
+chmod 755 ${KAFKA_HOME}/connect_mqtt_connector_TLS.sh
+
+echo "#!/bin/bash
+
+http DELETE ${KAFKA_BROKER_IP}:8083/connectors/mqtt-source-connector-test" > ${KAFKA_HOME}/rm_connector.sh
+chmod 755 ${KAFKA_HOME}/rm_connector.sh
 
 mv ${KAFKA_HOME}/*test.sh ${BACKUP_DIR}
 mv configure_kafka_cluster_TLS.sh ${BACKUP_DIR}
