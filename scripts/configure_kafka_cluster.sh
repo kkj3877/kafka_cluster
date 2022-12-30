@@ -209,10 +209,31 @@ rest.port=8083
 # plugin.path=/usr/local/share/java,/usr/local/share/kafka/plugins,/opt/connectors,
 #plugin.path= " > ${CONFIG_DIR}/connect-distributed.properties
 
-cp ${SH_DIR}/start_cluster.sh ${KAFKA_HOME}
+
+##################################################
+## Make start_cluster.sh
+echo -e "#!/bin/bash
+
+echo \"Wait seconds to start Zookeeper...\"
+zookeeper-server-start.sh -daemon /home/cluster/Documents/kafka/config/zookeeper.properties
+sleep 2s
+echo \"Wait seconds to start Kafka Broker...\"
+kafka-server-start.sh -daemon /home/cluster/Documents/kafka/config/server.properties
+sleep 1s
+echo \"Done\"" > ${KAFKA_HOME}/start_cluster.sh
+
+
+##################################################
+## Make start_connect_distributed.sh
+echo -e "#!/bin/bash
+
+echo \"Start Kafka-Connect...\"
+connect-distributed.sh -daemon /home/cluster/Documents/kafka/config/connect-distributed.properties
+" > ${KAFKA_HOME}/start_connect_distributed.sh
+
+
 cp ${SH_DIR}/topic_test.sh ${KAFKA_HOME}
 cp ${SH_DIR}/producer_test.sh ${KAFKA_HOME}
-cp ${SH_DIR}/start_connect_distributed.sh ${KAFKA_HOME}
 cp ${SH_DIR}/configure_kafka_cluster_TLS.sh ${KAFKA_HOME}
 
 mv ${KAFKA_HOME}/configure_kafka_cluster.sh ${BACKUP_DIR}/
